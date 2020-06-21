@@ -1,4 +1,6 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
 import time
 import json
 import datetime, time
@@ -9,7 +11,10 @@ JD_quan_url = 'https://a.jd.com/?cateId='
 JD_quan_ids = ['135','134','143','136','137','138','139','140','142' \
             ,'146','149','150','152','153','154','159']
 
-
+chrome_options = Options()
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_argument('--headless')
 
 def Get_jd_quan_html(url, driver):
         
@@ -70,7 +75,7 @@ def Parser_jd_quan_2_json(html, id):
 
 def Run_jd_quan():
 
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(chrome_options=chrome_options) # linux options for chrome
     result = []
     for id in JD_quan_ids:
         url = JD_quan_url + id
