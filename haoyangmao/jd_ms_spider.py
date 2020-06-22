@@ -63,8 +63,13 @@ def Brand_parser():
     items = soup.find_all(class_="brandsknow_item brandItem")
 
     for item in items:
+        rest_time = ""
+        strings = item.span.span.strings
+        for string in strings:
+            rest_time += string
+        search_time = datetime.datetime.now().strftime("%Y-%m-%d %X")
         url = prefix+item['data-brid']
-        page = Get_jd_ms_html(url, 3, 10, 100000)
+        page = Get_jd_ms_html(url, 3, 5, 100000)
         soup = BeautifulSoup(page, 'lxml')
         good_list = soup.find_all(class_="seckill_mod_goods")
         len1 = len(json_list)
@@ -84,6 +89,17 @@ def Brand_parser():
                 map['old_price'] += string
 
             map['state'] = good.find(class_="seckill_mod_goods_progress_txt").string
+            
+            map['rest_time'] = rest_time
+
+            map['search_time'] = search_time
+            
+            img = good.find(class_="seckill_mod_goods_link_img")
+            if 'src' in img.attrs:
+                map['img_src'] = img["src"]
+            else:
+                map['img_src'] = img["data-lazy-img"]
+            
             json_list.append(map)
         len2 = len(json_list)
 
