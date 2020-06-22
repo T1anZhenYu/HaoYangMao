@@ -1,3 +1,4 @@
+# coding=utf-8
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -38,15 +39,15 @@ JD_ms_top_map = {'京东秒杀': 'https://miaosha.jd.com',
                  '汽车用品': 'https://miaosha.jd.com/category.html?cate_id = 21', 
                  '生鲜': 'https://miaosha.jd.com/category.html?cate_id = 25'}
                  
-driver = webdriver.Chrome()  # chrome_options=chrome_options
+driver = webdriver.Chrome(chrome_options=chrome_options)
 
-def Get_jd_ms_html(url, wait_time, lrange):
+def Get_jd_ms_html(url, wait_time, lrange, step):
 
     driver.get(url)
     time.sleep(wait_time)
     for i in range(2, lrange):
         js = "var q=document.documentElement.scrollTop={}".format(
-            i*1000)
+            i*step)
         driver.execute_script(js)
         time.sleep(0.5) 
     page = driver.page_source
@@ -57,13 +58,13 @@ def Brand_parser():
     json_list = []
     prefix = "https://miaosha.jd.com/brand.html?brand_id="
     url = JD_ms_top_map['品类秒杀']
-    page = Get_jd_ms_html(url, 3, 10)
+    page = Get_jd_ms_html(url, 3, 10, 1000)
     soup = BeautifulSoup(page, 'lxml')
     items = soup.find_all(class_="brandsknow_item brandItem")
 
     for item in items:
         url = prefix+item['data-brid']
-        page = Get_jd_ms_html(url, 3, 50)
+        page = Get_jd_ms_html(url, 3, 10, 100000)
         soup = BeautifulSoup(page, 'lxml')
         good_list = soup.find_all(class_="seckill_mod_goods")
         len1 = len(json_list)
